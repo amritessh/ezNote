@@ -126,6 +126,11 @@ impl Cli {
             }
             
             Commands::Delete { id, force } => {
+                // Check if note exists first
+                if let Err(_) = note_service.get_note(*id) {
+                    return Err(anyhow::anyhow!("Note {} not found", id));
+                }
+                
                 if !force {
                     println!("Delete note {}? (y/N)", id.to_string().cyan());
                     let mut input = String::new();

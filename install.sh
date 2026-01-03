@@ -2,9 +2,9 @@
 set -e
 
 # ezNote Universal Installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/eznote/main/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/amritesh/eznote/main/install.sh | bash
 
-REPO="YOUR_USERNAME/eznote" # UPDATE THIS!
+REPO="amritesh/eznote"
 BINARY_NAME="ezn"
 INSTALL_DIR="/usr/local/bin"
 
@@ -75,11 +75,12 @@ fi
 echo ""
 echo "✅ ezNote installed successfully!"
 echo ""
-echo "Quick start:"
+echo "📖 Quick start:"
 echo "  ezn add \"My first note\""
 echo "  ezn list"
 echo "  ezn today"
 echo ""
-echo "Run 'ezn --help' for all commands"
+echo "📚 Full documentation: https://github.com/$REPO"
+echo "💬 Need help? Open an issue: https://github.com/$REPO/issues"
 echo ""
-echo "⭐ Star the repo: https://github.com/$REPO"
+echo "⭐ If you like ezNote, please star the repo!"

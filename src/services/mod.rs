@@ -50,7 +50,7 @@ impl NoteService {
                 is_archived: row.get::<_, i32>(5)? != 0,
                 tags: Vec::new(),
             })
-        })?;
+        }).map_err(|_| anyhow::anyhow!("Note with ID {} not found", id))?;
         
         // Load tags
         let tags = self.get_tags_for_note(id)?;
@@ -196,7 +196,18 @@ impl NoteService {
     }
     
     pub fn delete_note(&self, id: i64) -> anyhow::Result<()> {
+        // First check if note exists
         let conn = self.db.connection();
+        let exists: bool = conn.query_row(
+            "SELECT EXISTS(SELECT 1 FROM notes WHERE id = ?1)",
+            params![id],
+            |row| row.get(0),
+        )?;
+        
+        if !exists {
+            return Err(anyhow::anyhow!("Note with ID {} not found", id));
+        }
+        
         conn.execute("DELETE FROM notes WHERE id = ?1", params![id])?;
         Ok(())
     }
