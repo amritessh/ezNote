@@ -1,0 +1,49 @@
+[package]
+name = "eznote"
+version = "0.1.0"
+edition = "2021"
+authors = ["Amritesh"]
+description = "Zero-friction note taking for developers"
+license = "MIT"
+repository = "https://github.com/amritesh/eznote"
+readme = "README.md"
+keywords = ["cli", "notes", "productivity", "terminal"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+name = "ezn"
+path = "src/main.rs"
+
+[dependencies]
+# CLI Framework
+clap = { version = "4.5", features = ["derive", "cargo"] }
+
+# Database
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Date/Time
+chrono = { version = "0.4", features = ["serde"] }
+
+# Terminal UI
+colored = "2.1"
+
+# Error Handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Directories
+directories = "5.0"
+
+[dev-dependencies]
+tempfile = "3.8"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
