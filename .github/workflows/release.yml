@@ -1,0 +1,125 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v0.0.1'
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux x86_64
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            binary_name: ezn
+            output_name: ezn-linux-x86_64
+          
+          # macOS x86_64 (Intel)
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            binary_name: ezn
+            output_name: ezn-macos-x86_64
+          
+          # macOS ARM64 (M1/M2)
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            binary_name: ezn
+            output_name: ezn-macos-aarch64
+          
+          # Windows x86_64
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            binary_name: ezn.exe
+            output_name: ezn-windows-x86_64.exe
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+      
+      - name: Prepare binary (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          cp target/${{ matrix.target }}/release/${{ matrix.binary_name }} ${{ matrix.output_name }}
+          chmod +x ${{ matrix.output_name }}
+      
+      - name: Prepare binary (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          copy target\${{ matrix.target }}\release\${{ matrix.binary_name }} ${{ matrix.output_name }}
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.output_name }}
+          path: ${{ matrix.output_name }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: binaries
+      
+      - name: Display structure
+        run: ls -R binaries
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: binaries/*/*
+          body: |
+            ## ezNote ${{ github.ref_name }}
+            
+            Zero-friction note taking for developers who live in the terminal.
+            
+            ### 📦 Installation
+            
+            **Quick Install (macOS/Linux)**
+            ```bash
+            curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/main/install.sh | bash
+            ```
+            
+            **Manual Installation**
+            1. Download the binary for your platform below
+            2. Make it executable: `chmod +x ezn-*` (Unix only)
+            3. Move to PATH: `sudo mv ezn-* /usr/local/bin/ezn`
+            
+            **Homebrew** (Coming soon)
+            ```bash
+            brew install eznote
+            ```
+            
+            ###  Quick Start
+            ```bash
+            ezn add "My first note"
+            ezn list
+            ezn today
+            ```
+            
+            ###  Documentation
+            See [README](https://github.com/${{ github.repository }}) for full documentation.
+            
+            ###  Bugs?
+            Report issues at https://github.com/${{ github.repository }}/issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
