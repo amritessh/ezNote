@@ -2,9 +2,9 @@
 
 > Zero-friction note taking for developers who live in the terminal
 
-[![Release](https://img.shields.io/github/v/release/amritesh/eznote?style=flat-square)](https://github.com/amritesh/eznote/releases)
+[![Release](https://img.shields.io/github/v/release/amritessh/eznote?style=flat-square)](https://github.com/amritessh/eznote/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
-[![Build](https://img.shields.io/github/actions/workflow/status/amritesh/eznote/release.yml?style=flat-square)](https://github.com/amritesh/eznote/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/amritessh/eznote/release.yml?style=flat-square)](https://github.com/amritessh/eznote/actions)
 
 Built with 🦀 Rust for maximum speed and reliability.
 
@@ -33,7 +33,7 @@ Done. Back to coding in milliseconds.
 
 ---
 
-## ✨ Features
+## Features
 
 - **Lightning Fast** - Sub-10ms startup, instant note capture
 - **Zero Dependencies** - Single binary, no Rust toolchain needed
